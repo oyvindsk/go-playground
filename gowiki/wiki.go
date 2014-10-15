@@ -3,13 +3,13 @@ package main
 // http://golang.org/doc/articles/wiki/
 
 import (
+	"flag"
 	"html/template"
 	"io/ioutil"
+	"log"
+	"net"
 	"net/http"
 	"regexp"
-    "flag"
-    "net"
-    "log"
 )
 
 var addr = flag.Bool("addr", false, "find open address and print to final-port.txt")
@@ -38,24 +38,24 @@ func main() {
 	// p1.save()
 	// p2, _ := loadPage("TestPage")
 	// fmt.Println(string(p2.Body))
-    flag.Parse()
-    http.HandleFunc("/view/", makeHandler(viewHandler))
-    http.HandleFunc("/edit/", makeHandler(editHandler))
-    http.HandleFunc("/save/", makeHandler(saveHandler))
+	flag.Parse()
+	http.HandleFunc("/view/", makeHandler(viewHandler))
+	http.HandleFunc("/edit/", makeHandler(editHandler))
+	http.HandleFunc("/save/", makeHandler(saveHandler))
 
-    if *addr {
-        l, err := net.Listen("tcp", "127.0.0.1:0")
-        if err != nil {
-            log.Fatal(err)
-        }
-        err = ioutil.WriteFile("final-port.txt", []byte(l.Addr().String()), 0644)
-        if err != nil {
-            log.Fatal(err)
-        }
-        s := &http.Server{}
-        s.Serve(l)
-        return
-    }
+	if *addr {
+		l, err := net.Listen("tcp", "127.0.0.1:0")
+		if err != nil {
+			log.Fatal(err)
+		}
+		err = ioutil.WriteFile("final-port.txt", []byte(l.Addr().String()), 0644)
+		if err != nil {
+			log.Fatal(err)
+		}
+		s := &http.Server{}
+		s.Serve(l)
+		return
+	}
 	http.ListenAndServe(":3000", nil)
 }
 
