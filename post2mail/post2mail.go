@@ -116,7 +116,7 @@ func formatAndSendEmail(data Email, smtpInfo SMTPUser) {
 		smtpInfo.Server+":"+strconv.Itoa(smtpInfo.Port),
 		auth,
 		smtpInfo.Name,
-		[]string{"os@odots.org"}, //[]string{data.To},
+        []string{data.To},
 		buffer.Bytes(),
 	)
 
