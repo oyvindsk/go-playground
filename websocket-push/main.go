@@ -3,10 +3,18 @@ package main
 import (
 	"io"
 	"net/http"
+	"time"
 
 	log "github.com/Sirupsen/logrus"
 	"github.com/gorilla/websocket"
 )
+
+// messae represents a single message
+type message struct {
+	From string
+	Msg  []byte
+	Time time.Time
+}
 
 var (
 	upgrader = websocket.Upgrader{
@@ -14,10 +22,16 @@ var (
 	}
 )
 
+// One global room, for now
+var room1 *room
+
 func main() {
+
+	room1 = startRoom()
 
 	mux := http.NewServeMux()
 	mux.HandleFunc("/ws", handleWebsocket)
+	mux.HandleFunc("/api/hello", handleAPIHello)
 
 	err := http.ListenAndServe(":80", mux)
 
@@ -25,6 +39,10 @@ func main() {
 		panic("ListenAndServe: " + err.Error())
 	}
 
+}
+
+func handleAPIHello(w http.ResponseWriter, r *http.Request) {
+	room1.toAll <- message{Msg: []byte("Hello From the API =)")}
 }
 
 func handleWebsocket(w http.ResponseWriter, r *http.Request) {
@@ -40,9 +58,12 @@ func handleWebsocket(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	// OK websokset connection. Add to room
+	room1.join <- ws
+
 	for {
 		mt, data, err := ws.ReadMessage()
-		ctx := log.Fields{"mt": mt, "data": data, "err": err}
+		ctx := log.Fields{"mt": mt, "data": string(data), "err": err}
 		if err != nil {
 			if err == io.EOF {
 				log.WithFields(ctx).Info("Websocket closed!")
@@ -62,7 +83,12 @@ func handleWebsocket(w http.ResponseWriter, r *http.Request) {
 			//}
 			//rw.publish(data)
 
-			ws.WriteMessage(mt, []byte("Takk!"))
+			msg := message{
+				Msg: data,
+			}
+			room1.toAll <- msg
+
+			//ws.WriteMessage(mt, []byte("Takk!"))
 		default:
 			log.WithFields(ctx).Warning("Unknown Message!")
 		}
