@@ -3,6 +3,7 @@ package main
 import (
 	"io"
 	"net/http"
+	"os"
 	"time"
 
 	log "github.com/Sirupsen/logrus"
@@ -27,13 +28,18 @@ var room1 *room
 
 func main() {
 
+	port := os.Getenv("PORT")
+	if port == "" {
+		log.WithField("PORT", port).Fatal("$PORT must be set")
+	}
+
 	room1 = startRoom()
 
 	mux := http.NewServeMux()
 	mux.HandleFunc("/ws", handleWebsocket)
 	mux.HandleFunc("/api/hello", handleAPIHello)
 
-	err := http.ListenAndServe(":80", mux)
+	err := http.ListenAndServe(":"+port, mux)
 
 	if err != nil {
 		panic("ListenAndServe: " + err.Error())
