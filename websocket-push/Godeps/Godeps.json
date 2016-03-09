@@ -1,0 +1,19 @@
+{
+	"ImportPath": "github.com/oyvindsk/go-playground/websocket-push",
+	"GoVersion": "go1.6",
+	"Deps": [
+		{
+			"ImportPath": "github.com/Sirupsen/logrus",
+			"Comment": "v0.9.0-15-g219c8cb",
+			"Rev": "219c8cb75c258c552e999735be6df753ffc7afdc"
+		},
+		{
+			"ImportPath": "github.com/gorilla/websocket",
+			"Rev": "6eb6ad425a89d9da7a5549bc6da8f79ba5c17844"
+		},
+		{
+			"ImportPath": "golang.org/x/sys/unix",
+			"Rev": "7a56174f0086b32866ebd746a794417edbc678a1"
+		}
+	]
+}
