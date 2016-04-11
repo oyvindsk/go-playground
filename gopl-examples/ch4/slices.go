@@ -24,20 +24,24 @@ func main() {
 	//b = spacerem(b)
 	//fmt.Printf("%s\n%v\n", b, b)
 
-	b := []byte{'a', 'b', 'c', 'æ', 'ø', 'å'}
-	fmt.Printf("%s\n%v\n", b, b)
-	reverseB(b)
+	//b := []byte{'a', 'b', 'c', 'æ', 'ø', 'å'}
+	b := []byte(string([]rune{'a', 'b', 'c', 'æ', 'ø', 'å'}))
+	fmt.Printf("%s\n%v\n", string(b), b)
+	b = reverseB(b)
 	fmt.Printf("%s\n%v\n", b, b)
 
 }
 
 // reverse reverses a slice of runes
-func reverseB(b []byte) {
+func reverseB(b []byte) []byte {
 	r := bytes.Runes(b)
 	for i, j := 0, len(r)-1; i < j; i, j = i+1, j-1 {
+        fmt.Println("Moving:", r[i], r[j])
 		r[i], r[j] = r[j], r[i]
 	}
-	fmt.Println(r)
+	fmt.Printf("%s\n%v\n", string(r), r)
+    b = []byte(string(r))
+    return b
 }
 
 func spacerem(b []byte) []byte {
