@@ -1,29 +1,22 @@
 package main
 
-import "fmt"
+import (
+	"fmt"
+	"log"
+)
 
 func main() {
-	var cost float64
-	var tip, tax int
-
-	cnt, err := fmt.Scan(&cost)
+	var n int
+	_, err := fmt.Scan(&n)
 	if err != nil {
-		panic(fmt.Sprintf("Only read: %d, err: %v", cnt, err))
+		log.Fatal(err)
 	}
 
-	cnt, err = fmt.Scan(&tip)
-	if err != nil {
-		panic(fmt.Sprintf("Only read: %d, err: %v", cnt, err))
+	switch {
+	case n%2 != 0, n >= 6 && n <= 20:
+		fmt.Println("Weird")
+	case n >= 2 && n <= 5, n > 20:
+		fmt.Println("Not Weird")
 	}
-
-	cnt, err = fmt.Scan(&tax)
-	if err != nil {
-		panic(fmt.Sprintf("Only read: %d, err: %v", cnt, err))
-	}
-
-	//fmt.Println(cost, tip, tax)
-
-	total := cost + (cost * (float64(tip) / 100.0)) + (cost * (float64(tax) / 100.0))
-	fmt.Printf("The total meal cost is %.0f dollars.\n", total)
 
 }
