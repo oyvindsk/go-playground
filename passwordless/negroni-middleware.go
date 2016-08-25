@@ -6,6 +6,9 @@
 //   Storing / Checking user info
 //   Generating / Storing / Checking one-time tokens
 
+// https://github.com/urfave/negroni
+// http://www.pixeldonor.com/2015/feb/09/passwordless-authentication-golang/
+
 package passwordless
 
 import (

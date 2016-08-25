@@ -6,6 +6,9 @@ package main
 // https://godoc.org/context#Context
 // https://elithrar.github.io/article/map-string-interface/
 
+// Context vs Session: http://stackoverflow.com/questions/20415340/how-is-gorilla-context-different-from-gorilla-sessions
+// Spoiler: Context is data for 1 request sessions are to "tie" many requests together
+
 import (
 	"fmt"
 	"log"
