@@ -6,7 +6,7 @@ import (
 	"log"
 
 	_ "github.com/mattn/go-sqlite3"
-	"github.com/oyvindsk/go-playground/sql/models"
+	"github.com/oyvindsk/go-playground/sql/xo/models"
 )
 
 func main() {
