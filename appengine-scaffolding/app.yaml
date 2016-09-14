@@ -1,0 +1,16 @@
+application: stunning-symbol-139515
+version: v1
+
+module: go-test
+
+runtime: go
+api_version: go1
+
+handlers:
+- url: /.*
+  script: _go_app
+
+skip_files:
+- ^test$
+- .git$
+- .*git.*
