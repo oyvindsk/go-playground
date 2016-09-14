@@ -8,7 +8,13 @@ package foo
 
 // Data to templates
 
+// Create handlers that:
+// - Have access to shared data without making it global
+// - Avoids having to duplicate error handling (logging + http.Erro) in all handlers, just return instead (handle this in middleware?)
+
 // Error handling, with http redirect for 404, 500 etc
+//      https://golang.org/doc/articles/wiki/#tmp_9
+//      https://codegangsta.gitbooks.io/building-web-apps-with-go/content/controllers/index.html
 //      https://astaxie.gitbooks.io/build-web-application-with-golang/content/en/11.1.html
 
 import (
@@ -36,6 +42,8 @@ type templateData struct {
 	Res           int
 }
 
+type templateMap map[string]*template.Template
+
 type fooError struct {
 	Origin   error
 	Msg      string
@@ -61,61 +69,69 @@ func init() {
 	n.Use(sessions.Sessions("foo", store))
 
 	r := mux.NewRouter()
-	r.Handle("/", handlePageMain(templates))
+	r.Handle("/", makeHandler(handlePageMain, templates))
 
 	n.UseHandler(r)
 	http.Handle("/", n)
 
 }
 
-func handlePageMain(templates map[string]*template.Template) http.Handler {
-	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-
+func makeHandler(fn func(http.ResponseWriter, *http.Request, templateMap) *fooError, templates templateMap) http.HandlerFunc {
+	return func(w http.ResponseWriter, r *http.Request) {
+		fe := fn(w, r, templates)
 		ctx := appengine.NewContext(r)
-		log.Infof(ctx, "handlePageMain()")
-		session := sessions.GetSession(r)
+		log.Errorf(ctx, "!! %d: %s (%v)", fe.HTTPCode, fe.Msg, fe.Origin)
+		http.Error(w, fe.Msg, fe.HTTPCode)
+		// could this be moved to middleware?
+	}
+}
 
-		// Session values
-		var pageLoadedCnt int
-		var ok bool
-		if pageLoadedCnt, ok = session.Get("page_loaded_count").(int); ok {
-			log.Infof(ctx, "Index: DID find page_loaded_count in session: %d", pageLoadedCnt)
-		} else {
-			log.Infof(ctx, "Index: did not find page_loaded_count in session")
-		}
+func handlePageMain(w http.ResponseWriter, r *http.Request, templates templateMap) *fooError {
 
-		pageLoadedCnt++
-		session.Set("page_loaded_count", pageLoadedCnt)
+	ctx := appengine.NewContext(r)
+	log.Infof(ctx, "handlePageMain()")
+	session := sessions.GetSession(r)
 
-		// Context data - In go 1.7 this can be added to r *http.Request, but ae does not have go 1.7 yet
-		ctx2 := context.WithValue(ctx, "KEY", 44) // FIXME this is not how you're "suppose" to key :)
+	// Session values
+	var pageLoadedCnt int
+	var ok bool
+	if pageLoadedCnt, ok = session.Get("page_loaded_count").(int); ok {
+		log.Infof(ctx, "Index: DID find page_loaded_count in session: %d", pageLoadedCnt)
+	} else {
+		log.Infof(ctx, "Index: did not find page_loaded_count in session")
+	}
 
-		// "Bussiness Logic" - aka do Stuff
-		res, err := doStuff(ctx2, 2, 2)
+	pageLoadedCnt++
+	session.Set("page_loaded_count", pageLoadedCnt)
 
-		if err != nil {
-			http.Error(w, err.Error(), err.HTTPCode)
-			return
-		}
+	// Context data - In go 1.7 this can be added to r *http.Request, but ae does not have go 1.7 yet
+	ctx2 := context.WithValue(ctx, "KEY", 44) // FIXME this is not how you're "suppose" to key :)
 
-		data := templateData{
-			"index.tmpl",
-			"Main page",
-			pageLoadedCnt,
-			res,
-		}
+	// "Bussiness Logic" - aka do Stuff
+	res, err := doStuff(ctx2, 2, 2)
 
-		err = renderTemplate(w, templates, data)
+	if err != nil {
+		return err
+	}
 
-		if err != nil {
-			http.Error(w, err.Error(), err.HTTPCode)
-			return
-		}
-	})
+	data := templateData{
+		"index.tmpl",
+		"Main page",
+		pageLoadedCnt,
+		res,
+	}
+
+	err = renderTemplate(w, templates, data)
+
+	if err != nil {
+		return err
+	}
+
+	return nil
 
 }
 
-func renderTemplate(w http.ResponseWriter, templates map[string]*template.Template, data templateData) *fooError {
+func renderTemplate(w http.ResponseWriter, templates templateMap, data templateData) *fooError {
 
 	t, ok := templates[data.TemplateFile]
 	if !ok {
@@ -132,7 +148,7 @@ func renderTemplate(w http.ResponseWriter, templates map[string]*template.Templa
 
 }
 
-func mustLoadTemplates(dir, baseTmpl string) map[string]*template.Template {
+func mustLoadTemplates(dir, baseTmpl string) templateMap {
 	templates := make(map[string]*template.Template)
 	tBase := template.Must(template.ParseFiles(baseTmpl))
 	tFiles, err := ioutil.ReadDir(dir)
