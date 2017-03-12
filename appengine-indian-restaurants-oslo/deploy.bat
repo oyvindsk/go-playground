@@ -1,0 +1,1 @@
+gcloud app deploy .\app\app.yaml --project  stunning-symbol-139515 -q
