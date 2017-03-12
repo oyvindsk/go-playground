@@ -3,9 +3,6 @@ package app
 import (
 	"fmt"
 	"net/http"
-
-	"os"
-
 	"strings"
 
 	"github.com/gorilla/mux"
@@ -25,8 +22,7 @@ func init() {
 func handlePageMain(w http.ResponseWriter, r *http.Request) error {
 	ctx := appengine.NewContext(r)
 
-	log.Debugf(ctx, "JSON CREDS:\n%s", os.Getenv("CLIENT_SECRET"))
-	visited, unvisited, err := getRestaurantsByVisited(ctx, os.Getenv("CLIENT_SECRET"))
+	visited, unvisited, err := getRestaurantsByVisited(ctx)
 
 	if err != nil {
 		return err

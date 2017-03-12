@@ -11,33 +11,23 @@ import (
 	"google.golang.org/appengine/log"
 )
 
-func getRestaurantsByVisited(ctx context.Context, clientSecret string) ([]string, []string, error) {
+var sheetsClient *sheets.Service // ATM this is global and lazy initialzied by te functions in this file
 
-	// If modifying these scopes, delete your previously saved credentials
-	// at ~/.credentials/sheets.googleapis.com-go-quickstart.json
-	//config, err := google.ConfigFromJSON([]byte(clientSecret), "https://www.googleapis.com/auth/spreadsheets.readonly")
-	//if err != nil {
-	//	log.Errorf(ctx, "Unable to parse client secret file to config: %v", err)
-	//	return nil, nil, fooError{Origin: err, Msg: "Unable to parse client secret file to config", HTTPCode: http.StatusInternalServerError}
-	//}
+func getRestaurantsByVisited(ctx context.Context) ([]string, []string, error) {
 
-	client, err := getClient(ctx)
-	if err != nil {
-		log.Errorf(ctx, "Unable to retrieve Sheets Client %v", err)
-		return nil, nil, fooError{Origin: err, Msg: "Unable to retrieve Sheets Client", HTTPCode: http.StatusInternalServerError}
-	}
-
-	srv, err := sheets.New(client)
-	if err != nil {
-		log.Errorf(ctx, "Unable to retrieve Sheets Client %v", err)
-		return nil, nil, fooError{Origin: err, Msg: "Unable to retrieve Sheets Client", HTTPCode: http.StatusInternalServerError}
+	if sheetsClient == nil {
+		var err error
+		sheetsClient, err = newSheetsClient(ctx)
+		if err != nil {
+			return nil, nil, err
+		}
 	}
 
 	// Prints the names and majors of students in a sample spreadsheet:
 	// https://docs.google.com/spreadsheets/d/1BxiMVs0XRA5nFMdKvBdBZjgmUUqptlbs74OgvE2upms/edit
 
 	readRange := "Restauranter!A4:F"
-	resp, err := srv.Spreadsheets.Values.Get(os.Getenv("SHEET_ID"), readRange).Do()
+	resp, err := sheetsClient.Spreadsheets.Values.Get(os.Getenv("SHEET_ID"), readRange).Do()
 	if err != nil {
 		log.Errorf(ctx, "Unable to retrieve data from sheet. %v", err)
 		return nil, nil, fooError{Origin: err, Msg: "Unable to retrieve data from sheet", HTTPCode: http.StatusInternalServerError}
