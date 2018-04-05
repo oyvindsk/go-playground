@@ -1,0 +1,5 @@
+package: github.com/oyvindsk/go-playground/dep-test
+import:
+- package: cloud.google.com/go
+  subpackages:
+  - logging
