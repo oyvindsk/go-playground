@@ -1,4 +1,4 @@
-module github.com/oyvindsk/go-playground/scraping
+module github.com/oyvindsk/go-playground/scraping/xxl.no-inventory-checker
 
 go 1.14
 
