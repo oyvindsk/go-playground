@@ -1,0 +1,6 @@
+== Package htmlstatemachinemetadataextractorthingy
+
+AKA html-statemachine-metadata-extractor-thingy
+
+This was exttacted from the blogengine github.com/oyvindsk/web-oyvindsk.com/
+not testet much, but I keep it since  I like the state machine and I might need something similar in the future
