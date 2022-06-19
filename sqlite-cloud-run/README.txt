@@ -1,0 +1,36 @@
+
+Test SQLite on Google Cloud Run.
+
+The purpose is to run low traffic web apps for (almost?) free on Cloud Run, while beeing easily portable (no properitary GCP databases).
+
+Basically: 
+ - DB stored "locally" on the Cloud Run instance, on disk, but AFAIK disk == memory
+ - Stream DB to Storage with Litestream
+ - Read DB on instance start
+ - Limit Cloud Run to 0 or 1 instance 
+
+ - Too much data: Copying to/from Storage will become slow and expensinve
+ - Too much traffic: If it never scales to 0 a VM will be cheaper and simpler
+ - Too much traffic: There are limits to what 1 process + SQLite can do.
+
+
+SQLite: 
+
+Go and packages:
+- oyvindsk-rss-test-sqlite-1
+
+Google Cloud Platform:
+os@oslap (master) ~/go-playground/sqlite-cloud-run2$ gcloud config set account oyvindska@gmail.com
+os@oslap (master) ~/go-playground/sqlite-cloud-run2$ gcloud auth application-default login
+
+
+Litestream:
+ - Compiling:       https://litestream.io/install/source/
+    - git checkout v0.3.8
+    - go install ./cmd/litestream
+ - SQLite tips:     https://litestream.io/tips/
+ - Sync to GCS:     https://litestream.io/guides/gcs/
+
+ litestream replicate ./foo.db 'gcs://oyvindsk-rss-test-sqlite-1/foo'
+
+os@oslap /tmp$ litestream restore -o ./foo2  'gcs://oyvindsk-rss-test-sqlite-1/foo'
