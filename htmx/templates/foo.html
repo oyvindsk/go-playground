@@ -1,0 +1,48 @@
+<html>
+<head>
+    
+</head>
+
+<body>
+      <!-- Load from unpkg -->
+  <script src="https://unpkg.com/htmx.org@1.6.1"></script>
+  <!-- have a button POST a click via AJAX -->
+  <button hx-post="/foo-button" hx-swap="outerHTML">
+    Click Me
+  </button>
+
+
+     <div hx-post="/mouse_entered" hx-trigger="mouseenter">
+      [Here Mouse, Mouse!]
+   </div>
+
+<!-- Trigger delay ! -->
+
+<!--
+    GET /foo-button?q=wee HTTP/1.1
+    Host: localhost:8080
+    Accept: */*
+    Accept-Encoding: gzip, deflate
+    Accept-Language: en-US,en;q=0.5
+    Connection: keep-alive
+    Dnt: 1
+Hx-Current-Url: http://localhost:8080/foo
+Hx-Request: true
+Hx-Target: search-results
+Hx-Trigger-Name: q
+    Referer: http://localhost:8080/foo
+    Sec-Fetch-Dest: empty
+    Sec-Fetch-Mode: cors
+    Sec-Fetch-Site: same-origin
+    User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:95.0) Gecko/20100101 Firefox/95.0
+-->
+
+   <input type="text" name="q"
+          hx-get="/foo-button"
+          hx-trigger="keyup changed delay:500ms"
+          hx-target="#search-results"
+          placeholder="Search..."/>
+    <div id="search-results"></div>
+</body>
+
+</html>
