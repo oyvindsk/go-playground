@@ -17,11 +17,11 @@ Basically:
 SQLite: 
 
 Go and packages:
-- oyvindsk-rss-test-sqlite-1
 
 Google Cloud Platform:
-os@oslap (master) ~/go-playground/sqlite-cloud-run2$ gcloud config set account oyvindska@gmail.com
-os@oslap (master) ~/go-playground/sqlite-cloud-run2$ gcloud auth application-default login
+project=sqlite-test-353918
+$ gcloud config set account oyvindska@gmail.com
+$ gcloud auth application-default login
 
 
 Litestream:
@@ -34,3 +34,24 @@ Litestream:
  litestream replicate ./foo.db 'gcs://oyvindsk-rss-test-sqlite-1/foo'
 
 os@oslap /tmp$ litestream restore -o ./foo2  'gcs://oyvindsk-rss-test-sqlite-1/foo'
+
+
+
+https://mermaid.live/edit#pako:eNqNkkFrhDAQhf_KkFMXdlnUm4eWslt6aaHU3tRDMGMVYmJj0rKI_72j0e26vexlCLzvvclM0rNCC2Qx-zS8reDjCACZogK1CNL98-ENEsQOrOFlWRf7HHa7eygCzxTBXXrQyvJaoYHEcmPzzUTIIH2pLXbWIG_gnQ7aYO5dMpiQhlzpKxV4bFvqYr6RwC9HbLcmZXQZlpxUMetjxEQInYigTypnhf5RD8Nsj85i-E-cLKSD0ufr_CnhhSKjK8eJFrJYEuFnWOLzq4wbWC_5VuFq0jUnQ7_8cL103eYbtmUNGgoS9JT9iGfMVthgxmI6Ciy5kzZjmRoIda3gFp9ETY_C4pLLDreMO6vH1bLYGocLdKw5_YxmpoZfnNmwcw
+
+graph TD   
+    id1[/GCP Sees traffic/] --> c1
+    c1([Container Start]) --> l1[Litestream Restore]
+    l1 --> main[Main App Serve Requests]
+    l1 --> l3[Litestream Sync]
+    main --> doSd1{Shutdown?}
+    l3 --> doSd2{Shutdown?}
+    doSd1 -- no --> main
+    doSd2 -- no --> l3
+    doSd1 -- yes --> mainSd[Main Shutdown]
+    doSd2 -- yes --> mainSd[Main Shutdown]
+    mainSd --> l2[Litestream Shutdown]
+    l2 --> c2([Container Stop])
+
+
+Deploying:

@@ -1,4 +1,4 @@
-module github.com/oyvindsk/go-playground/sqlite-cloud-run2
+module github.com/oyvindsk/go-playground/sqlite-cloud-run
 
 go 1.18
 
