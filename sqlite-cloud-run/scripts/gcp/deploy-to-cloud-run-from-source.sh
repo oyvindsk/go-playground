@@ -4,6 +4,11 @@
 # in one big swoop,
 # kind of like App Engine Standard
 # Results can be seen in Cloud Build and Artifact Registry
+# Will use buildpacks
+
+echo "TODO : This does not work with litestream (yet?)"
+exit
+
 gcloud \
     --project sqlite-test-353918 \
     run deploy test-1 \

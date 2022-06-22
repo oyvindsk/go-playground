@@ -31,9 +31,14 @@ Litestream:
  - SQLite tips:     https://litestream.io/tips/
  - Sync to GCS:     https://litestream.io/guides/gcs/
 
- litestream replicate ./foo.db 'gcs://oyvindsk-rss-test-sqlite-1/foo'
+Replicate:
+$ litestream replicate ./foo.db 'gcs://oyvindsk-sqlite-test-litestream'
 
-os@oslap /tmp$ litestream restore -o ./foo2  'gcs://oyvindsk-rss-test-sqlite-1/foo'
+Restore:
+$ DIR=foo2-backup-$(date '+%s%N')
+$ mkdir $DIR
+$ mv foo2.db* $DIR
+$ litestream restore -o ./foo2.db  'gcs://oyvindsk-sqlite-test-litestream'
 
 
 
@@ -54,4 +59,14 @@ graph TD
     l2 --> c2([Container Stop])
 
 
-Deploying:
+
+
+Building with GCP build => Artifact Registry,
+   and 
+Deploying from GCP Artifact Registry => Cloud Run
+$ ./scripts/gcp/build-to-artifact-registry-and-deploy-to-cloud-run.sh
+
+
+
+Building with Docker locally:
+$ ./scripts/locally/build-with-docker-and-run.sh
