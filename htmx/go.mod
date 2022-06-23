@@ -2,7 +2,10 @@ module github.com/oyvindsk/go-playground/htmx
 
 go 1.17
 
-require github.com/labstack/echo/v4 v4.7.2
+require (
+	github.com/antage/eventsource v0.0.0-20220422142129-c4aae935d5bd
+	github.com/labstack/echo/v4 v4.7.2
+)
 
 require (
 	github.com/golang-jwt/jwt v3.2.2+incompatible // indirect

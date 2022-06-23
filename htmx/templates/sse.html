@@ -1,0 +1,21 @@
+<html>
+<head>
+    
+</head>
+
+<body>
+
+    
+    <!-- Load from unpkg -->
+    <script src="https://unpkg.com/htmx.org@1.7.0"></script>
+    <script src="https://unpkg.com/htmx.org/dist/ext/sse.js" defer></script>
+  
+<ul hx-ext="sse" sse-connect="/sse-element" sse-swap="tick-event"  hx-swap="afterbegin">
+    <li>init li</li>
+</ul>
+
+
+
+</body>
+
+</html>
