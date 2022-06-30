@@ -70,3 +70,12 @@ $ ./scripts/gcp/build-to-artifact-registry-and-deploy-to-cloud-run.sh
 
 Building with Docker locally:
 $ ./scripts/locally/build-with-docker-and-run.sh
+
+
+
+Plan:
+[ ] Simple templates (no css)
+[ ] Basic functionality with htmx
+[ ] Reorganize repo ond go code
+[ ] Good sqlite usage
+[ ] Better templates - css :)

@@ -11,17 +11,14 @@ import (
 	_ "github.com/mattn/go-sqlite3"
 )
 
-func mustInitDB(logger echo.Logger) *sql.DB {
+func mustInitDB(logger echo.Logger, dbfile string) *sql.DB {
 
-	db, err := sql.Open("sqlite3", "./foo.db")
+	db, err := sql.Open("sqlite3", dbfile)
 	if err != nil {
 		logger.Fatal(err)
 	}
-	// defer db.Close()
 
-	sqlStmt := `CREATE TABLE IF NOT EXISTS foo (unixmilli INTEGER NO NULL PRIMARY KEY, msg text)`
-
-	// delete from fooo;
+	sqlStmt := `CREATE TABLE IF NOT EXISTS messages (unixmilli INTEGER NO NULL PRIMARY KEY, author, msg text)`
 
 	_, err = db.Exec(sqlStmt)
 	if err != nil {
@@ -33,7 +30,7 @@ func mustInitDB(logger echo.Logger) *sql.DB {
 
 func fprintAll(logger echo.Logger, db *sql.DB, out io.Writer) error {
 
-	rows, err := db.Query("SELECT unixmilli, msg FROM foo")
+	rows, err := db.Query("SELECT unixmilli, author, msg FROM messages")
 	if err != nil {
 		return err
 	}
@@ -41,13 +38,14 @@ func fprintAll(logger echo.Logger, db *sql.DB, out io.Writer) error {
 	defer rows.Close()
 
 	for rows.Next() {
-		var id int
-		var name string
-		err = rows.Scan(&id, &name)
+		var time int
+		var author string
+		var msg string
+		err = rows.Scan(&time, &author, &msg)
 		if err != nil {
 			return err
 		}
-		fmt.Fprintln(out, id, name)
+		fmt.Fprintln(out, time, author, msg)
 	}
 
 	err = rows.Err()
@@ -58,11 +56,11 @@ func fprintAll(logger echo.Logger, db *sql.DB, out io.Writer) error {
 	return nil
 }
 
-func storeMsg(logger echo.Logger, db *sql.DB, msg string) error {
+func storeMsg(logger echo.Logger, db *sql.DB, author, msg string) error {
 
 	ctx := context.Background()
 
-	res, err := db.ExecContext(ctx, "INSERT INTO foo(unixmilli, msg) VALUES(?, ?)", time.Now().UnixMilli(), msg)
+	res, err := db.ExecContext(ctx, "INSERT INTO messages(unixmilli, author, msg) VALUES(?, ?, ?)", time.Now().UnixMilli(), author, msg)
 	if err != nil {
 		return err
 	}
