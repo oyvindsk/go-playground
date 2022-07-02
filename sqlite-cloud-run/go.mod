@@ -3,7 +3,9 @@ module github.com/oyvindsk/go-playground/sqlite-cloud-run
 go 1.18
 
 require (
+	github.com/antage/eventsource v0.0.0-20220422142129-c4aae935d5bd
 	github.com/labstack/echo/v4 v4.7.2
+	github.com/maragudk/gomponents v0.18.0
 	github.com/mattn/go-sqlite3 v1.14.13
 )
 

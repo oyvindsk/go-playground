@@ -28,6 +28,46 @@ func mustInitDB(logger echo.Logger, dbfile string) *sql.DB {
 	return db
 }
 
+type dbMessages []struct {
+	time        int
+	author, msg string
+}
+
+func getAll(db *sql.DB, logger echo.Logger) (dbMessages, error) {
+
+	var res dbMessages
+
+	rows, err := db.Query("SELECT unixmilli, author, msg FROM messages ORDER BY unixmilli DESC")
+	if err != nil {
+		return dbMessages{}, err
+	}
+
+	defer rows.Close()
+
+	for rows.Next() {
+		var time int
+		var author string
+		var msg string
+		err = rows.Scan(&time, &author, &msg)
+		if err != nil {
+			return dbMessages{}, err
+		}
+
+		res = append(res, struct {
+			time        int
+			author, msg string
+		}{time, author, msg})
+
+	}
+
+	err = rows.Err()
+	if err != nil {
+		return dbMessages{}, err
+	}
+
+	return res, nil
+}
+
 func fprintAll(logger echo.Logger, db *sql.DB, out io.Writer) error {
 
 	rows, err := db.Query("SELECT unixmilli, author, msg FROM messages")
@@ -77,9 +117,11 @@ func storeMsg(logger echo.Logger, db *sql.DB, author, msg string) error {
 	return nil
 }
 
-func foo(logger echo.Logger) {
+func foo(srv server, logger echo.Logger) {
 
 	// os.Remove("./foo.db")
+
+	db := srv.db // =/
 
 	tx, err := db.Begin()
 	if err != nil {

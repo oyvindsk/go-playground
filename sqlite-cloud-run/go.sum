@@ -1,3 +1,5 @@
+github.com/antage/eventsource v0.0.0-20220422142129-c4aae935d5bd h1:FD3sn3oFA0wySr3iH+47H3lIts9qT9nZfoF935hxaH0=
+github.com/antage/eventsource v0.0.0-20220422142129-c4aae935d5bd/go.mod h1:jXAZMa2S7OGjBCXWeQVOIZd+LXToszS2zCh0NiHRGvE=
 github.com/davecgh/go-spew v1.1.0/go.mod h1:J7Y8YcW2NihsgmVo/mv3lAwl/skON4iLHjSsI+c5H38=
 github.com/davecgh/go-spew v1.1.1 h1:vj9j/u1bqnvCEfJOwUhtlOARqs3+rkHYY13jYWTU97c=
 github.com/davecgh/go-spew v1.1.1/go.mod h1:J7Y8YcW2NihsgmVo/mv3lAwl/skON4iLHjSsI+c5H38=
@@ -7,6 +9,8 @@ github.com/labstack/echo/v4 v4.7.2 h1:Kv2/p8OaQ+M6Ex4eGimg9b9e6icoxA42JSlOR3msKt
 github.com/labstack/echo/v4 v4.7.2/go.mod h1:xkCDAdFCIf8jsFQ5NnbK7oqaF/yU1A1X20Ltm0OvSks=
 github.com/labstack/gommon v0.3.1 h1:OomWaJXm7xR6L1HmEtGyQf26TEn7V6X88mktX9kee9o=
 github.com/labstack/gommon v0.3.1/go.mod h1:uW6kP17uPlLJsD3ijUYn3/M5bAxtlZhMI6m3MFxTMTM=
+github.com/maragudk/gomponents v0.18.0 h1:EcdeRUWsWW6hK9ftnGAoyXR00SQWecCBxuXghQvdEcc=
+github.com/maragudk/gomponents v0.18.0/go.mod h1:0OdlqOoqxcwvhBFrp8wlKHnEXhNB7IVhb8GuARmd+tI=
 github.com/mattn/go-colorable v0.1.11 h1:nQ+aFkoE2TMGc0b68U2OKSexC+eq46+XwZzWXHRmPYs=
 github.com/mattn/go-colorable v0.1.11/go.mod h1:u5H1YNBxpqRaxsYJYSkiCWKzEfiAb1Gb520KVy5xxl4=
 github.com/mattn/go-isatty v0.0.14 h1:yVuAays6BHfxijgZPzw+3Zlu5yQgKGP2/hcQbHb7S9Y=
