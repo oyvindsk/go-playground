@@ -46,6 +46,8 @@ func main() {
 		"/",
 		func(ec echo.Context) error {
 
+			ec.Logger().Debugf("GET / \nheaders: \n %+v", ec.Request().Header)
+
 			// Get exisiting rows from the db
 			messages, err := getAll(srv.db, ec.Logger())
 			if err != nil {
@@ -60,6 +62,8 @@ func main() {
 	e.POST(
 		"/",
 		func(ec echo.Context) error {
+
+			ec.Logger().Debugf("POST / \nheaders: \n %+v", ec.Request().Header)
 
 			vals, err := ec.FormParams()
 			if err != nil {
@@ -95,6 +99,7 @@ func main() {
 
 	e.Any("/sse-element", func(ec echo.Context) error {
 		ec.Echo().Logger.Debugf("In /sse !!")
+		ec.Logger().Debugf("headers: \n %+v", ec.Request().Header)
 		es.ServeHTTP(ec.Response(), ec.Request())
 		return nil
 	})

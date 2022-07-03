@@ -1,5 +1,7 @@
 #!/bin/bash
 
+set -e
+
 # Build from source and deploy the result to Cloud Run,
 # in one big swoop,
 # kind of like App Engine Standard

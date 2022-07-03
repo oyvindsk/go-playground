@@ -93,7 +93,9 @@ func form1() g.Node {
 
 func form2() g.Node {
 	return FormEl(
-		g.Attr("hx-post", "/"),
+		// g.Attr("hx-post", "/"),
+		Method("post"),
+		g.Attr("hx-boost", "true"),
 		g.Attr("hx-swap", "none"),
 		Input(
 			Type("text"),
@@ -112,6 +114,34 @@ func form2() g.Node {
 		Input(
 			Type("submit"),
 			Value("Store"),
+		),
+
+		Div(
+			g.Attr("hx-get", "/htmx:sseError"),
+			g.Attr("hx-trigger", "htmx:sseError"),
+			g.Attr("hx-swap", "afterend"),
+			g.Raw("htmx:sseError"),
+		),
+
+		Div(
+			g.Attr("hx-get", "/htmx:onLoadError"),
+			g.Attr("hx-swap", "afterend"),
+			g.Attr("hx-trigger", "htmx:onLoadError"),
+			g.Raw("htmx:onLoadError"),
+		),
+
+		Div(
+			g.Attr("hx-get", "/htmx:timeout"),
+			g.Attr("hx-swap", "afterend"),
+			g.Attr("hx-trigger", "htmx:timeout"),
+			g.Raw("htmx:timeout"),
+		),
+
+		Div(
+			g.Attr("hx-get", "/htmx:responseError"),
+			g.Attr("hx-swap", "afterend"),
+			g.Attr("hx-trigger", "htmx:responseError"),
+			g.Raw("htmx:responseError"),
 		),
 	)
 }
