@@ -10,38 +10,72 @@ import (
 
 func pageHome(srv server, ec echo.Context, messages dbMessages) g.Node {
 
-	var body []g.Node
+	div1 :=
+		Div(
+			H1(g.Text("Velkommen til opplagstavla")),
 
-	body = append(body, Div(
-		H1(g.Text("Welcome to this example page")),
-		// 		P(g.Text("I hope it will make you happy. 😄 It's using TailwindCSS for styling.")),
+			form2(),
 
-		form2(),
+			// Button(
+			// 	g.Attr("hx-get", "/"),
+			// 	g.Attr("hx-swap", "outerHTML"),
+			// 	g.Text("Click Me"),
+			// ),
+		)
 
-		Button(
-			g.Attr("hx-get", "/"),
-			g.Attr("hx-swap", "outerHTML"),
-			g.Text("Click Me"),
-		),
-	))
+	// var lis []g.Node
 
-	var lis []g.Node
+	// lis = append(lis,
+	// 	g.Attr("hx-ext", "sse"),
+	// 	g.Attr("sse-connect", "/sse-element"),
+	// 	g.Attr("sse-swap", "tick-event"),
+	// 	g.Attr("hx-swap", "afterbegin"),
+	// )
+	// for _, m := range messages {
+	// 	lis = append(lis, Li(
+	// 		g.Text(m.author),
+	// 		g.Raw(" - "),
+	// 		g.Text(m.msg),
+	// 	))
+	// }
 
-	lis = append(lis,
+	// Table with messages
+	var trs = []g.Node{
 		g.Attr("hx-ext", "sse"),
 		g.Attr("sse-connect", "/sse-element"),
 		g.Attr("sse-swap", "tick-event"),
 		g.Attr("hx-swap", "afterbegin"),
-	)
-	for _, m := range messages {
-		lis = append(lis, Li(
-			g.Text(m.author),
-			g.Raw(" - "),
-			g.Text(m.msg),
-		))
 	}
 
-	body = append(body, Ul(lis...))
+	for _, m := range messages {
+		trs = append(trs,
+			Tr(
+				Td(g.Text(m.author)),
+				Td(g.Text(m.msg)),
+			),
+		)
+	}
+
+	table := Table(
+		THead(
+			Tr(
+				Th(g.Text("Fra")),
+				Th(g.Text("Beskjed")),
+			),
+		),
+		TBody(
+			trs...,
+		),
+	)
+
+	body := []g.Node{
+		Main(
+			div1,
+			// Ul(lis...),
+			H2(g.Text("Beskjeder:")),
+			table,
+		),
+	}
 
 	return page2(srv, ec, "Hjem", "/", body)
 
@@ -59,6 +93,7 @@ func page2(srv server, ec echo.Context, title, path string, body []g.Node) g.Nod
 			// Link(Rel("stylesheet"), Href("https://unpkg.com/tailwindcss@2.1.2/dist/components.min.css")),
 			// Link(Rel("stylesheet"), Href("https://unpkg.com/@tailwindcss/typography@0.4.0/dist/typography.min.css")),
 			// Link(Rel("stylesheet"), Href("https://unpkg.com/tailwindcss@2.1.2/dist/utilities.min.css")),
+			Link(Rel("stylesheet"), Href("https://unpkg.com/@picocss/pico@latest/css/pico.classless.min.css"), Type("text/css")),
 			Script(Src("https://unpkg.com/htmx.org@1.7.0")),
 			Script(Src("https://unpkg.com/htmx.org/dist/ext/sse.js"), Defer()),
 		},
@@ -66,30 +101,30 @@ func page2(srv server, ec echo.Context, title, path string, body []g.Node) g.Nod
 	})
 }
 
-func form1() g.Node {
-	return FormEl(
-		Action(""),
-		Method("post"),
-		Input(
-			Type("text"),
-			ID("author"),
-			Name("author"),
-			MaxLength("500"),
-			g.Attr("size", "20"),
-		),
-		Input(
-			Type("text"),
-			ID("msg"),
-			Name("msg"),
-			MaxLength("500"),
-			g.Attr("size", "100"),
-		),
-		Input(
-			Type("submit"),
-			Value("Store"),
-		),
-	)
-}
+// func form1() g.Node {
+// 	return FormEl(
+// 		Action(""),
+// 		Method("post"),
+// 		Input(
+// 			Type("text"),
+// 			ID("author"),
+// 			Name("author"),
+// 			MaxLength("500"),
+// 			g.Attr("size", "20"),
+// 		),
+// 		Input(
+// 			Type("text"),
+// 			ID("msg"),
+// 			Name("msg"),
+// 			MaxLength("500"),
+// 			g.Attr("size", "100"),
+// 		),
+// 		Input(
+// 			Type("submit"),
+// 			Value("Store"),
+// 		),
+// 	)
+// }
 
 func form2() g.Node {
 	return FormEl(
@@ -101,6 +136,7 @@ func form2() g.Node {
 			Type("text"),
 			ID("author"),
 			Name("author"),
+			Placeholder("Fra.."),
 			MaxLength("500"),
 			g.Attr("size", "20"),
 		),
@@ -108,12 +144,13 @@ func form2() g.Node {
 			Type("text"),
 			ID("msg"),
 			Name("msg"),
+			Placeholder("Beskjed.."),
 			MaxLength("500"),
 			g.Attr("size", "100"),
 		),
 		Input(
 			Type("submit"),
-			Value("Store"),
+			Value("Legg til"),
 		),
 
 		Div(

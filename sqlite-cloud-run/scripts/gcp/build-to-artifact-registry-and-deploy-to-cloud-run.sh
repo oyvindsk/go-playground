@@ -19,6 +19,8 @@ gcloud \
     $tmpdir
 
 # Deploy the image from Artifact Registry
+#   --no-cpu-throttling: Might be needed to complte litestream sync to gcs?
+#       https://cloud.google.com/run/docs/configuring/cpu-allocation#command-line
 gcloud \
     --project sqlite-test-353918 \
     beta run deploy \
@@ -26,6 +28,7 @@ gcloud \
     --region=europe-north1 \
     --allow-unauthenticated \
     --max-instances=1 \
+    --no-cpu-throttling \
     --set-env-vars='DB_PATH=database-files/foo.db,REPLICA_URL=gcs://oyvindsk-sqlite-test-litestream' \
     --execution-environment gen2 \
     --image=$IMAGE_URL

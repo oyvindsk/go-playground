@@ -86,7 +86,7 @@ func main() {
 				return err
 			}
 
-			srv.eventsource.SendEventMessage("<li>"+author+" - "+msg+"</li>", "tick-event", "1")
+			srv.eventsource.SendEventMessage("<tr><td>"+author+"</td> <td>"+msg+"</td></tr>", "tick-event", "1") // FIXME
 
 			return nil // return ec.Redirect(http.StatusFound, "/")
 		},
