@@ -81,12 +81,44 @@ func pageHome(srv server, ec echo.Context, messages dbMessages) g.Node {
 
 }
 
+func pagePassword(srv server, ec echo.Context) g.Node {
+
+	body := []g.Node{
+		Main(
+			// Ul(lis...),
+			H2(g.Text("Passord:")),
+
+			FormEl(
+				// g.Attr("hx-post", "/"),
+				Method("post"),
+				g.Attr("hx-boost", "true"),
+				g.Attr("hx-swap", "none"),
+				Input(
+					Type("password"),
+					ID("password"),
+					Name("password"),
+					Placeholder("Passord.."),
+					MaxLength("500"),
+					g.Attr("size", "20"),
+				),
+				Input(
+					Type("submit"),
+					Value("Logg inn"),
+				),
+			),
+		),
+	}
+
+	return page2(srv, ec, "Hjem", "/", body)
+
+}
+
 // take extra headers?
 func page2(srv server, ec echo.Context, title, path string, body []g.Node) g.Node {
 
 	// HTML5 boilerplate document
 	return c.HTML5(c.HTML5Props{
-		Title:    "Hjem",
+		Title:    title,
 		Language: "no",
 		Head: []g.Node{
 			// Link(Rel("stylesheet"), Href("https://unpkg.com/tailwindcss@2.1.2/dist/base.min.css")),
