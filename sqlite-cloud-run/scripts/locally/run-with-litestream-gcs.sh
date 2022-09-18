@@ -2,18 +2,16 @@
 
 set -e
 
-DB_PATH="database-files/foo.db"
-REPLICA_URL="gcs://oyvindsk-sqlite-test-litestream"
-
-export DB_PATH
+# We probably want to source SECRET-config.sh file first
+source SECRET-config.sh
 
 go build ./cmd/server
 
-echo "deleting database $DB_PATH"
-rm -rf $DB_PATH 
+echo "deleting database $T_DB_PATH"
+rm -rf $T_DB_PATH 
 
-echo ./litestream restore -o $DB_PATH $REPLICA_URL
-litestream restore -if-replica-exists -o $DB_PATH $REPLICA_URL
+echo ./litestream restore -o $T_DB_PATH $T_REPLICA_URL
+litestream restore -if-replica-exists -o $T_DB_PATH $T_REPLICA_URL
 
-echo ./litestream replicate --exec ./server $DB_PATH $REPLICA_URL
-litestream replicate --exec ./server $DB_PATH $REPLICA_URL
+echo ./litestream replicate --exec ./server $T_DB_PATH $T_REPLICA_URL
+litestream replicate --exec ./server $T_DB_PATH $T_REPLICA_URL

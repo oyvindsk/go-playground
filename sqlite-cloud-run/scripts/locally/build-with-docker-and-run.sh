@@ -2,6 +2,9 @@
 
 set -e
 
+# We probably want to source SECRET-config.sh file first
+source SECRET-config.sh
+
 # Build a docker image, with litestrem and everything, and run it locally
 # Mostly useful to test the Dockerfile and build scipt locally, without having to wait for Cloud Build
 
@@ -18,7 +21,9 @@ sudo docker run \
     --rm \
     -ti \
     -v ~/.config/gcloud/application_default_credentials.json:/app/auth \
-    -e "GOOGLE_APPLICATION_CREDENTIALS=/app/auth" \
-    -e "DB_PATH=database-files/foo.db" \
-    -e "REPLICA_URL=gcs://oyvindsk-sqlite-test-litestream" \
+    -e "GOOGLE_APPLICATION_CREDENTIALS=/app/auth"   \
+    -e "T_DB_PATH=${T_DB_PATH}"                     \
+    -e "T_REPLICA_URL=${T_REPLICA_URL}"             \
+    -e "T_SESSION_KEY=${T_SESSION_KEY}"             \
+    -e "T_USER_PASSWORD=${T_USER_PASSWORD}"         \
     -p 8080:8080 sqlite-test:latest

@@ -2,7 +2,8 @@
 
 set -e
 
-DB_PATH="database-files/foo.db"
-export DB_PATH
+# We probably want to source SECRET-config.sh file first
+source SECRET-config.sh
+
 
 go run ./cmd/server/*.go

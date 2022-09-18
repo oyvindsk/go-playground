@@ -60,6 +60,14 @@ graph TD
 
 
 
+###################3
+Running: 
+
+Create the config file SECRET-config.sh , see Config-example.sh
+
+Create the Cloud Artifact Registry Repository named in the config file
+TODO: Put this in some script? 
+
 
 Building with GCP build => Artifact Registry,
    and 
@@ -71,11 +79,15 @@ $ ./scripts/gcp/build-to-artifact-registry-and-deploy-to-cloud-run.sh
 Building with Docker locally:
 $ ./scripts/locally/build-with-docker-and-run.sh
 
+Configs and secrets:
 
 
 Plan:
-[ ] Simple templates (no css)
-[ ] Basic functionality with htmx
+[x] Simple templates (no css)
+[x] Basic functionality with htmx
+[ ] Support password
+[ ] Support message deletion
+[ ] Handle errors :P
 [ ] Reorganize repo ond go code
 [ ] Good sqlite usage
-[ ] Better templates - css :)
+[x] Better templates - css :)

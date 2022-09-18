@@ -11,13 +11,13 @@ set -e
 echo "TODO : This does not work with litestream (yet?)"
 exit
 
-gcloud \
-    --project sqlite-test-353918 \
-    run deploy test-1 \
-    --region=europe-north1 \
-    --allow-unauthenticated \
-    --max-instances=1 \
-    --source .
+# gcloud \
+#     --project sqlite-test-353918 \
+#     run deploy test-1 \
+#     --region=europe-north1 \
+#     --allow-unauthenticated \
+#     --max-instances=1 \
+#     --source .
 
 # TODO:
 #   --concurrency=CONCURRENCY 

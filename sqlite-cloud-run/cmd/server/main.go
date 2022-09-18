@@ -5,7 +5,6 @@ import (
 	"log"
 	"net/http"
 	"os"
-	"time"
 
 	"github.com/antage/eventsource"
 	"github.com/labstack/echo/v4"
@@ -34,17 +33,31 @@ func main() {
 	srv.logger = e.Logger // also a ec.Logger, but this is used when we're not inside a http requets? hm..
 
 	// Init db
-	dbpath := os.Getenv("DB_PATH")
+	dbpath := os.Getenv("T_DB_PATH")
 	if dbpath == "" {
-		log.Fatalln("DB_PATH environment variable must be sat")
+		log.Fatalln("T_DB_PATH environment variable must be sat")
 	}
 	srv.db = mustInitDB(e.Logger, dbpath)
 
+	// Init Session store
+	// Read "secret keys" from env variables
+	sessionKey := os.Getenv("T_SESSION_KEY")
+	if sessionKey == "" {
+		log.Fatalln("T_SESSION_KEY environment variable must be sat")
+	}
+
+	log.Printf("session key: %q", sessionKey)
+
 	var err error
-	// srv.sessionStore, err = sqlitestore.NewSqliteStore(dbpath, "sessions", "/", 3600, []byte("<SecretKey>"))
-	srv.sessionStore, err = sqlitestore.NewSqliteStoreFromConnection(srv.db, "sessions", "/", 3600, []byte("<SecretKey>"))
+	srv.sessionStore, err = sqlitestore.NewSqliteStoreFromConnection(srv.db, "sessions", "/", 3600, []byte(sessionKey))
 	if err != nil {
 		panic(err)
+	}
+
+	// Also read the password from en env var
+	userPass := os.Getenv("T_USER_PASSWORD")
+	if userPass == "" {
+		log.Fatalln("T_USER_PASSWORD environment variable must be sat")
 	}
 
 	// Middleware
@@ -140,7 +153,7 @@ func main() {
 
 	e.POST("/password", func(ec echo.Context) error {
 
-		if ec.FormValue("password") != "røykepause" {
+		if ec.FormValue("password") != userPass {
 			ec.Echo().Logger.Infof("Wrong password from client: %q", ec.FormValue("password"))
 			return echo.ErrUnauthorized
 		}
@@ -166,36 +179,4 @@ func main() {
 
 	// Start server
 	e.Logger.Fatal(e.Start(":8080"))
-}
-
-// created, error
-func (srv *server) sessionGetOrCreate(r *http.Request, w http.ResponseWriter) (bool, string, error) {
-
-	session, err := srv.sessionStore.Get(r, sessionName)
-	if err != nil {
-		return false, "", err
-	}
-
-	srv.logger.Debugf("sessTest: Session:\n%+v", session)
-
-	// if session.ID == "" {
-	// 	return false, nil // fmt.Errorf("sessionGet: ID empty, no session")
-	// }
-
-	bar, ok := session.Values["bar"].(string)
-	if ok {
-		return session.IsNew, bar, nil
-	}
-
-	return session.IsNew, "", nil
-}
-
-func (srv *server) sessionPut(r *http.Request, w http.ResponseWriter) error {
-	session, err := srv.sessionStore.Get(r, sessionName)
-	session.Values["bar"] = "baz"
-	session.Values["baz"] = time.Now().String()
-
-	err = session.Save(r, w)
-	// srv.logger.Debugf("sessTest: Session:\n%+v", session)
-	return err
 }
