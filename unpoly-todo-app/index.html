@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <script src="https://cdn.jsdelivr.net/npm/unpoly@3.9.0/unpoly.min.js"></script>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/unpoly@3.9.0/unpoly.min.css">
+  </head>
+  <body>
+    <main>
+      <a href="/a" up-follow up-target="#side">A</a>
+
+      <a href="/b" up-target="#side">B</a>
+
+      <a href="/a" up-layer="new">New layer A</a>
+    
+      <a href="/b" up-layer="new modal" up-class="warning" up-animation="shake">Smooth new b</a>
+
+
+      <h1>Side:</h1>
+      <div id="side"><h1>Index</h1></div>
+
+      <h1>Siste:</h1>
+      <div id="siste" up-hungry></div>
+
+
+    </main>
+  </body>
+</html>
